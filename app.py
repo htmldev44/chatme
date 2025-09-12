@@ -2,12 +2,14 @@ from flask import Flask, render_template, request, session, redirect
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-socketio = SocketIO(app)
+
+socketio = SocketIO(app, async_mode='eventlet')
 db = SQLAlchemy(app)
 
 # User Model
@@ -32,8 +34,8 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
 
-banned_users = set()  # Track banned users
-pinned_message = None  # Store pinned messages
+banned_users = set()
+pinned_message = None
 
 @app.route("/")
 def index():
@@ -104,11 +106,9 @@ def handle_message(data):
     if "username" in session:
         username = session["username"]
         message_text = data.get("message")
-        # Save the message to the database
         new_message = Message(username=username, message=message_text)
         db.session.add(new_message)
         db.session.commit()
-        # Broadcast the message
         timestamp = datetime.now().strftime('%H:%M:%S')
         full_message = f"[{timestamp}] {username}: {message_text}"
         emit('new_message', full_message, broadcast=True)
@@ -147,4 +147,4 @@ def promote_user(data):
             emit('system_message', f"User {username} not found.", broadcast=True)
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
