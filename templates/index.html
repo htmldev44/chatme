@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Welcome to the Chat Application</h1>
+
+    <!-- Pinned Message Section -->
+    <div id="pinnedMessage" style="display: none;"></div>
+
+    <!-- Chat Messages -->
+    <div id="messages"></div>
+
+    <!-- Input Section -->
+    <div id="messageInputSection">
+        <input type="text" id="messageInput" placeholder="Type your message here...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <!-- Admin Tools -->
+    <div id="adminTools" style="display: none;">
+        <h2>Admin Tools</h2>
+        <div>
+            <input type="text" id="banUsername" placeholder="Enter username to ban">
+            <button onclick="banUser()">Ban User</button>
+            <button onclick="unbanUser()">Unban User</button>
+        </div>
+        <div>
+            <input type="text" id="promoteUsername" placeholder="Enter username to promote">
+            <button onclick="promoteToAdmin()">Promote to Admin</button>
+        </div>
+        <div>
+            <button onclick="pinMessage()">Pin Message</button>
+            <button onclick="shutdownServer()">Shutdown Server</button>
+        </div>
+    </div>
+
+    <!-- Account Management Links -->
+    <div id="accountLinks">
+        <a href="/login">Login</a> | <a href="/logout">Logout</a>
+    </div>
+
+    <!-- Create Account Form -->
+    <div id="createAccount">
+        <h3>Create an Account</h3>
+        <form method="POST" action="/register">
+            <input type="text" name="username" placeholder="Enter your username" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="/login">Log in here</a></p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js"></script>
+    <script src="/static/main.js"></script>
+</body>
+</html>
